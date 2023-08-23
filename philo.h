@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/08/12 21:24:21 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/23 20:43:02 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ typedef struct s_pdata
 	int				eat;
 	int				sleep;
 	int				elimit;
-	pthread_mutex_t	rfork;
-	pthread_mutex_t	lfork;
+	pthread_mutex_t	rforks;
+	pthread_mutex_t	lforks;
 	pthread_mutex_t	elock;
 }					t_pdata;
 

@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/08/13 00:45:33 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/23 23:50:43 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
-#define PHILOS 5
+#define PHILOS 4
 #define DELAY 5000
 #define FOOD 50
 
@@ -26,23 +26,18 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+pthread_mutex_t	forks[PHILOS];
 typedef struct s_data
 {
-	int				i;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	elock;
-	pthread_mutex_t	lock;
-}					t_data;
+	int			i;
+	int			cnt;
+}				t_data;
 
-time_t	ft_get_time(void)
+time_t	ft_get_time(time_t start)
 {
 	time_t			ans;
-	time_t			start;
 	struct timeval	tv;
 
-	gettimeofday(&tv, NULL);
-	start = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
 	usleep(100 * 1000);
 	gettimeofday(&tv, NULL);
 	ans = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
@@ -50,85 +45,77 @@ time_t	ft_get_time(void)
 	return (ans);
 }
 
-void	*func(void *f)
+void	*func(void *data)
 {
-	t_data	*data;
-	time_t	ans;
-	int		i;
+	t_data			*pdata;
+	struct timeval	tv;
+	time_t			start;
 
-	ans=ft_get_time();
-	data = (t_data *)f;
-	// pthread_mutex_lock(&data->lock);
-	i=data->i;
-	if (i % 2 == 0)
+	pdata = (t_data *)data;
+	gettimeofday(&tv, NULL);
+	start = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+	while (1)
 	{
-		pthread_mutex_lock(data->r_fork);
-		printf("%d take a r_fork %ld\n", i, ans);
-		pthread_mutex_lock(data->l_fork);
-		printf("%d take a l_fork %ld\n", i, ans);
+		if (pdata->i % 2 == 0)
+		{
+			pthread_mutex_lock(&forks[pdata->i]);
+			if (pdata->i < PHILOS - 1)
+				pthread_mutex_lock(&forks[pdata->i + 1]);
+			else
+				pthread_mutex_lock(&forks[0]);
+		}
+		else
+		{
+			pthread_mutex_lock(&forks[pdata->i + 1]);
+			pthread_mutex_lock(&forks[pdata->i]);
+		}
+		pdata->cnt++;
+		printf("philos %d %ld eating cnt %d\n", pdata->i, ft_get_time(start),
+			pdata->cnt);
+		if (pdata->i % 2 == 0)
+		{
+			pthread_mutex_unlock(&forks[pdata->i]);
+			if (pdata->i < PHILOS - 1)
+				pthread_mutex_unlock(&forks[pdata->i + 1]);
+			else
+				pthread_mutex_unlock(&forks[0]);
+		}
+		else
+		{
+			pthread_mutex_unlock(&forks[pdata->i + 1]);
+			pthread_mutex_unlock(&forks[pdata->i]);
+		}
+		printf("philos %d %ld thinking\n", pdata->i, ft_get_time(start));
+		printf("philos %d %ld sleeping\n", pdata->i, ft_get_time(start));
 	}
-	else
-	{
-		pthread_mutex_lock(data->l_fork);
-		printf("%d take a l_fork %ld\n", i, ans);
-		pthread_mutex_lock(data->r_fork);
-		printf("%d take a r_fork %ld\n", i, ans);
-	}
-	// ans = ft_get_time();
-	pthread_mutex_lock(&data->elock);
-	ans = ft_get_time();
-	printf("%d eat %ld\n", i, ans);
-	pthread_mutex_unlock(&data->elock);
-	if (i % 2 != 0)
-	{
-		pthread_mutex_unlock(data->l_fork);
-		pthread_mutex_unlock(data->r_fork);
-	}
-	else
-	{
-		pthread_mutex_unlock(data->r_fork);
-		pthread_mutex_unlock(data->l_fork);
-	}
-	// pthread_mutex_unlock(&data->lock);
-	return (NULL);
+	return (pdata);
 }
 
 int	main(void)
 {
-	struct timeval	tv;
-	t_data			data[4];
-	pthread_t		t_arr[4];
-	pthread_mutex_t	r_fork[4];
-	pthread_mutex_t	l_fork[4];
-	int				i;
+	pthread_t	philos[PHILOS];
+	t_data		pdata[PHILOS];
+	int			i;
 
 	i = 0;
-	while (i < 4)
+	while (i < PHILOS)
 	{
-		pthread_mutex_init(&data[i].lock, NULL);
-		pthread_mutex_init(&data[i].elock, NULL);
-		pthread_mutex_init(&r_fork[i], NULL);
-		pthread_mutex_init(&l_fork[i], NULL);
+		pthread_mutex_init(&forks[i], NULL);
+		pdata[i].i = i;
+		pdata[i].cnt = 0;
 		i++;
 	}
 	i = 0;
-	while (i < 4)
+	while (i < PHILOS)
 	{
-		data[i].i = i;
-		if (i < 3)
-			data[i].l_fork = &l_fork[i + 1];
-		else
-			data[i].l_fork = &l_fork[0];
-		data[i].r_fork = &r_fork[i];
+		pthread_create(&philos[i], NULL, func, &pdata[i]);
 		i++;
 	}
 	i = 0;
-	while (i < 4)
+	while (i < PHILOS)
 	{
-		pthread_create(&t_arr[i], NULL, &func, &data[i]);
+		pthread_join(philos[i], NULL);
 		i++;
 	}
-	for (int i = 0; i < 4; i++)
-		pthread_join(t_arr[i], NULL);
 	return (0);
 }
