@@ -6,193 +6,116 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/08/28 23:38:04 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/30 22:58:27 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <assert.h>
-#include <errno.h>
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
-#define SUCCESS 0
-#define FAILURE -1
-#define PHILOS 4
-#define DELAY 5000
-#define FOOD 50
+#include "philo.h"
 
-pthread_mutex_t	forks[PHILOS];
-typedef struct s_data
+void	sleep_philo(t_p_data *p_data)
 {
-	int			i;
-	int			total;
-	int			eat_cnt;
-	int			die_time;
-	int			eat_time;
-	int			sleep_time;
-	int			until_eat;
-	int			died;
-}				t_data;
-
-time_t	get_millisecond(void)
-{
-	time_t			ans;
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	ans = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	return (ans);
-}
-
-time_t	ft_usleep(time_t arg_time)
-{
-	time_t	current;
-	time_t	ret;
-
-	current = get_millisecond();
-	ret = current;
-	while (ret < current + arg_time)
+	if (p_data->i % 2 == 0)
 	{
-		usleep(arg_time / 10);
-		ret = get_millisecond();
-	}
-	return (ret);
-}
-
-void	put_fork(t_data *pdata)
-{
-	if (pdata->i % 2 == 0)
-	{
-		pthread_mutex_unlock(&forks[pdata->i]);
-		if (pdata->i == pdata->total - 1)
-			pthread_mutex_unlock(&forks[0]);
-		else
-			pthread_mutex_unlock(&forks[pdata->i + 1]);
+		pthread_mutex_unlock(p_data->r_fork);
+		pthread_mutex_unlock(p_data->l_fork);
 	}
 	else
 	{
-		if (pdata->i == pdata->total - 1)
-			pthread_mutex_unlock(&forks[0]);
-		else
-			pthread_mutex_unlock(&forks[pdata->i + 1]);
-		pthread_mutex_unlock(&forks[pdata->i]);
+		pthread_mutex_unlock(p_data->l_fork);
+		pthread_mutex_unlock(p_data->r_fork);
 	}
+	printf("%ld %d is sleeping\n", ft_usleep(p_data->cmn_data->sleep_time)
+		- p_data->cmn_data->start, p_data->i);
 }
 
-void	sleep_philo(t_data *pdata, time_t start)
+void	eat(t_p_data *p_data)
 {
-	printf("%ld %d is sleeping\n", ft_usleep((time_t)pdata->sleep_time) - start,
-		pdata->i);
+	p_data->last_eat = get_millisecond();
+	printf("%ld %d is eating\n", ft_usleep(p_data->cmn_data->eat_time)
+		- p_data->cmn_data->start, p_data->i);
+	p_data->eat_cnt++;
+	sleep_philo(p_data);
 }
 
-void	eat(t_data *pdata, time_t start)
+void	take_fork(t_p_data *p_data)
 {
-	printf("%ld %d is eating\n", ft_usleep((time_t)pdata->eat_time) - start,
-		pdata->i);
-	pdata->eat_cnt++;
-	put_fork(pdata);
-}
-
-void	take_fork(t_data *pdata, time_t start)
-{
-	if (pdata->i % 2 == 0)
+	if (p_data->i % 2 == 0)
 	{
-		pthread_mutex_lock(&forks[pdata->i]);
-		if (pdata->i == pdata->total - 1)
-			pthread_mutex_lock(&forks[0]);
-		else
-			pthread_mutex_lock(&forks[pdata->i + 1]);
+		pthread_mutex_lock(p_data->r_fork);
+		printf("%ld %d has taken a fork\n", ft_usleep(0)
+			- p_data->cmn_data->start, p_data->i);
+		pthread_mutex_lock(p_data->l_fork);
+		printf("%ld %d has taken a fork\n", ft_usleep(0)
+			- p_data->cmn_data->start, p_data->i);
 	}
 	else
 	{
-		if (pdata->i == pdata->total - 1)
-			pthread_mutex_lock(&forks[0]);
-		else
-			pthread_mutex_lock(&forks[pdata->i + 1]);
-		pthread_mutex_lock(&forks[pdata->i]);
+		pthread_mutex_lock(p_data->l_fork);
+		printf("%ld %d has taken a fork\n", ft_usleep(0)
+			- p_data->cmn_data->start, p_data->i);
+		pthread_mutex_lock(p_data->r_fork);
+		printf("%ld %d has taken a fork\n", ft_usleep(0)
+			- p_data->cmn_data->start, p_data->i);
 	}
-	printf("%ld %d has taken a fork\n", ft_usleep(0) - start, pdata->i);
-	eat(pdata, start);
+	eat(p_data);
 }
 
-void	*func(void *data)
+void	*monitor_status(void *arg_data)
 {
-	t_data	*pdata;
-	time_t	start;
+	t_p_data	*p_data;
+	time_t		current;
 
-	pdata = (t_data *)data;
-	start = get_millisecond();
-	while (check_philo_status())
+	p_data = (t_p_data *)arg_data;
+	while (p_data->cmn_data->died == false)
 	{
-		take_fork(pdata, start);
-		sleep_philo(pdata, start);
-		printf("%ld %d is thinking\n", ft_usleep(0)-start, pdata->i);
+		// pthread_mutex_lock(&p_data->p_lock);
+		current = get_millisecond();
+		if (current - p_data->last_eat >= p_data->cmn_data->die_time)
+		{
+			pthread_mutex_lock(&p_data->cmn_data->lock);	
+			p_data->cmn_data->died = true;
+			printf("%ld %d died\n", current - p_data->cmn_data->start,p_data->i);
+			pthread_mutex_unlock(&p_data->cmn_data->lock);
+		}
+		// pthread_mutex_unlock(&p_data->p_lock);
 	}
-	return (pdata);
+	return (p_data);
 }
 
-int	pdata_init(t_data **pdata, pthread_t **philos, char **argv)
+void	*loop_philos(void *arg_data)
 {
-	int	i;
-	int	total;
+	t_p_data	*p_data;
 
-	i = 0;
-	total = atoi(argv[1]);
-	if (total == -1)
-		return (printf("invalid argv\n"));
-	*philos = malloc(sizeof(pthread_t) * total);
-	if (*philos == NULL)
-		return (printf("faile to malloc philos\n"));
-	*pdata = malloc(sizeof(t_data) * total);
-	if (*pdata == NULL)
-		return (printf("faile to malloc pdata\n"));
-	while (i < total)
+	p_data = (t_p_data *)arg_data;
+	pthread_create(&p_data->monitor, NULL, &monitor_status, p_data);
+	while (p_data->cmn_data->died == false)
 	{
-		(*pdata)[i].i = i;
-		(*pdata)[i].eat_cnt = 0;
-		(*pdata)[i].total = total;
-		(*pdata)[i].die_time = atoi(argv[2]);
-		(*pdata)[i].eat_time = atoi(argv[3]);
-		(*pdata)[i].sleep_time = atoi(argv[4]);
-		if (argv[5] != NULL)
-			(*pdata)[i].until_eat = atoi(argv[5]);
-		else
-			(*pdata)[i].until_eat = 0;
-		i++;
+		take_fork(p_data);
+		printf("%ld %d is thinking\n", ft_usleep(0) - p_data->cmn_data->start,
+			p_data->i);
 	}
-	return (SUCCESS);
+	pthread_join(p_data->monitor, NULL);
+	return (p_data);
 }
 
 int	main(int argc, char **argv)
 {
-	pthread_t	*philos;
-	t_data		*pdata;
+	t_cmn_data	cmn_data;
 	int			i;
 
 	if (argc == 5 || argc == 6)
-		pdata_init(&pdata, &philos, argv);
+	{
+		if (init_data(&cmn_data, argv) == FAILURE)
+			return (FAILURE);
+	}
 	else
-		return (printf("too few or too many arguments\n"));
-	i = 0;
-	while (i < pdata->total)
-	{
-		pthread_mutex_init(&forks[i], NULL);
-		i++;
-	}
-	i = 0;
-	while (i < pdata->total)
-	{
-		pthread_create(&philos[i], NULL, func, &pdata[i]);
-		i++;
-	}
-	i = 0;
-	while (i < pdata->total)
-	{
-		pthread_join(philos[i], NULL);
-		i++;
-	}
+		return (put_error("too few or too many arguments\n"));
+	i = -1;
+	while (++i < cmn_data.total)
+		pthread_create(&cmn_data.p_thread[i], NULL, &loop_philos,
+			&cmn_data.p_data[i]);
+	i = -1;
+	while (++i < cmn_data.total)
+		pthread_join(cmn_data.p_thread[i], NULL);
 	return (0);
 }
