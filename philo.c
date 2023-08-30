@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/08/30 22:58:27 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/30 23:56:39 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,17 @@ void	sleep_philo(t_p_data *p_data)
 		pthread_mutex_unlock(p_data->l_fork);
 		pthread_mutex_unlock(p_data->r_fork);
 	}
-	printf("%ld %d is sleeping\n", ft_usleep(p_data->cmn_data->sleep_time)
-		- p_data->cmn_data->start, p_data->i);
+	printf("%ld %d is sleeping\n", get_millisecond() - p_data->cmn_data->start,
+		p_data->i);
+	ft_usleep(p_data->cmn_data->sleep_time);
 }
 
 void	eat(t_p_data *p_data)
 {
 	p_data->last_eat = get_millisecond();
-	printf("%ld %d is eating\n", ft_usleep(p_data->cmn_data->eat_time)
-		- p_data->cmn_data->start, p_data->i);
+	printf("%ld %d is eating\n", p_data->last_eat - p_data->cmn_data->start,
+		p_data->i);
+	ft_usleep(p_data->cmn_data->eat_time);
 	p_data->eat_cnt++;
 	sleep_philo(p_data);
 }
@@ -42,19 +44,19 @@ void	take_fork(t_p_data *p_data)
 	if (p_data->i % 2 == 0)
 	{
 		pthread_mutex_lock(p_data->r_fork);
-		printf("%ld %d has taken a fork\n", ft_usleep(0)
+		printf("%ld %d has taken a fork\n", get_millisecond()
 			- p_data->cmn_data->start, p_data->i);
 		pthread_mutex_lock(p_data->l_fork);
-		printf("%ld %d has taken a fork\n", ft_usleep(0)
+		printf("%ld %d has taken a fork\n", get_millisecond()
 			- p_data->cmn_data->start, p_data->i);
 	}
 	else
 	{
 		pthread_mutex_lock(p_data->l_fork);
-		printf("%ld %d has taken a fork\n", ft_usleep(0)
+		printf("%ld %d has taken a fork\n", get_millisecond()
 			- p_data->cmn_data->start, p_data->i);
 		pthread_mutex_lock(p_data->r_fork);
-		printf("%ld %d has taken a fork\n", ft_usleep(0)
+		printf("%ld %d has taken a fork\n", get_millisecond()
 			- p_data->cmn_data->start, p_data->i);
 	}
 	eat(p_data);
@@ -72,9 +74,10 @@ void	*monitor_status(void *arg_data)
 		current = get_millisecond();
 		if (current - p_data->last_eat >= p_data->cmn_data->die_time)
 		{
-			pthread_mutex_lock(&p_data->cmn_data->lock);	
+			pthread_mutex_lock(&p_data->cmn_data->lock);
 			p_data->cmn_data->died = true;
-			printf("%ld %d died\n", current - p_data->cmn_data->start,p_data->i);
+			// printf("%ld %d died\n", current - p_data->cmn_data->start,
+			// 	p_data->i);
 			pthread_mutex_unlock(&p_data->cmn_data->lock);
 		}
 		// pthread_mutex_unlock(&p_data->p_lock);
@@ -91,7 +94,7 @@ void	*loop_philos(void *arg_data)
 	while (p_data->cmn_data->died == false)
 	{
 		take_fork(p_data);
-		printf("%ld %d is thinking\n", ft_usleep(0) - p_data->cmn_data->start,
+		printf("%ld %d is thinking\n", get_millisecond() - p_data->cmn_data->start,
 			p_data->i);
 	}
 	pthread_join(p_data->monitor, NULL);
@@ -111,6 +114,7 @@ int	main(int argc, char **argv)
 	else
 		return (put_error("too few or too many arguments\n"));
 	i = -1;
+	cmn_data.start=get_millisecond();
 	while (++i < cmn_data.total)
 		pthread_create(&cmn_data.p_thread[i], NULL, &loop_philos,
 			&cmn_data.p_data[i]);

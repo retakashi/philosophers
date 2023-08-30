@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 00:28:45 by reira             #+#    #+#             */
-/*   Updated: 2023/08/30 22:26:06 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/30 23:43:45 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ time_t	get_millisecond(void)
 	return (ans);
 }
 
-time_t	ft_usleep(time_t arg_time)
+void	ft_usleep(time_t arg_time)
 {
 	time_t	current;
 	time_t	ret;
@@ -34,5 +34,4 @@ time_t	ft_usleep(time_t arg_time)
 		usleep(arg_time / 10);
 		ret = get_millisecond();
 	}
-	return (ret);
 }

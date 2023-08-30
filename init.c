@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/08/30 22:43:27 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/30 23:49:28 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ int	init_data(t_cmn_data *cmn_data, char **argv)
 		return (FAILURE);
 	cmn_data->died = false;
 	cmn_data->fin_cnt = 0;
-	cmn_data->start=get_millisecond();
 	cmn_data->p_thread = malloc(sizeof(pthread_t) * (cmn_data->total));
 	if (cmn_data->p_thread == NULL)
 		return (put_error("failed to malloc p_thread\n"));

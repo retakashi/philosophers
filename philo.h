@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/08/30 22:42:47 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/30 23:43:23 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,5 @@ int						ft_atoi(const char *str);
 int						init_data(t_cmn_data *data, char **argv);
 // utils.c
 time_t					get_millisecond(void);
-time_t					ft_usleep(time_t arg_time);
+void					ft_usleep(time_t arg_time);
 #endif

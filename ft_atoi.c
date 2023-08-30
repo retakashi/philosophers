@@ -6,11 +6,11 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:05:26 by rtakashi          #+#    #+#             */
-/*   Updated: 2023/08/24 22:34:24 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/30 23:46:59 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_libft.h"
+#include "philo.h"
 
 static size_t	check_space(const char *str, size_t i);
 static size_t	check_sign(const char *str, size_t i, int *neg);
