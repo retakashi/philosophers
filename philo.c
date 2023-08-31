@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/08/31 15:12:25 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/31 23:35:30 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,17 @@ void	*monitor_status(void *arg_data)
 	p_data = (t_p_data *)arg_data;
 	while (1)
 	{
-		if (is_died(p_data) == true)
+		if (is_died(p_data) == FAILURE || is_finished(p_data) == FAILURE)
+			return ((void *)FAILURE);
+		if (is_died(p_data) == TRUE)
 		{
-			print_str(p_data, DIE);
+			print_status(p_data, DIE);
 			break ;
 		}
-		else if (is_finished(p_data) == true)
+		else if (is_finished(p_data) == TRUE)
 			break ;
 	}
-	return (p_data);
+	return ((void *)SUCCESS);
 }
 
 void	*loop_philos(void *arg_data)
@@ -38,21 +40,14 @@ void	*loop_philos(void *arg_data)
 	pthread_create(&p_data->monitor, NULL, &monitor_status, p_data);
 	while (1)
 	{
-		pthread_mutex_lock(&p_data->cmn_data->died_lock);
-		pthread_mutex_lock(&p_data->cmn_data->fin_lock);
-		if (p_data->cmn_data->died == true
-			|| p_data->cmn_data->finished == true)
-		{
-			pthread_mutex_unlock(&p_data->cmn_data->died_lock);
-			pthread_mutex_unlock(&p_data->cmn_data->fin_lock);
+		if (p_data->cmn_data->died !=0
+			|| p_data->cmn_data->finished !=0)
 			break ;
-		}
-		pthread_mutex_unlock(&p_data->cmn_data->died_lock);
-		pthread_mutex_unlock(&p_data->cmn_data->fin_lock);
-		take_fork(p_data);
+		if (take_fork(p_data) != 0)
+			return ((void *)FAILURE);
 	}
 	pthread_join(p_data->monitor, NULL);
-	return (p_data);
+	return ((void *)SUCCESS);
 }
 
 int	main(int argc, char **argv)
@@ -68,12 +63,18 @@ int	main(int argc, char **argv)
 	else
 		return (print_err("too few or too many arguments\n"));
 	i = -1;
-	cmn_data.start = get_millisecond();
+	cmn_data.start = gettimeofday_ms();
 	while (++i < cmn_data.total)
-		pthread_create(&cmn_data.p_thread[i], NULL, &loop_philos,
-			&cmn_data.p_data[i]);
+	{
+		if (pthread_create(&cmn_data.p_thread[i], NULL, &loop_philos,
+				&cmn_data.p_data[i]) != 0)
+			return (print_err("failed to pthread_create\n"));
+	}
 	i = -1;
 	while (++i < cmn_data.total)
-		pthread_join(cmn_data.p_thread[i], NULL);
-	return (0);
+	{
+		if (pthread_join(cmn_data.p_thread[i], NULL) != 0)
+			return (print_err("failed to pthread_join\n"));
+	}
+	return (SUCCESS);
 }

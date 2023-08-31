@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/08/31 13:52:47 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 01:08:13 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	init_mutex(t_cmn_data *cmn_data)
 {
 	int	i;
 
-	pthread_mutex_init(&cmn_data->died_lock,NULL);
-	pthread_mutex_init(&cmn_data->fin_lock, NULL);
 	i = 0;
 	while (i < cmn_data->total)
 	{
@@ -93,8 +91,8 @@ int	init_data(t_cmn_data *cmn_data, char **argv)
 {
 	if (set_argv(cmn_data, argv) == FAILURE)
 		return (FAILURE);
-	cmn_data->died = false;
-	cmn_data->finished = false;
+	cmn_data->died = 0;
+	cmn_data->finished = 0;
 	cmn_data->fin_cnt = 0;
 	cmn_data->p_thread = malloc(sizeof(pthread_t) * (cmn_data->total));
 	if (cmn_data->p_thread == NULL)

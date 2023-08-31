@@ -6,13 +6,13 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 00:28:45 by reira             #+#    #+#             */
-/*   Updated: 2023/08/31 15:44:24 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/31 23:57:30 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-time_t	get_millisecond(void)
+time_t	gettimeofday_ms(void)
 {
 	time_t			ans;
 	struct timeval	tv;
@@ -27,11 +27,11 @@ void	ft_usleep(time_t arg_time)
 	time_t	current;
 	time_t	ret;
 
-	current = get_millisecond();
+	current = gettimeofday_ms();
 	ret = current;
 	while (ret < current + arg_time)
 	{
-		usleep(arg_time / 100);
-		ret = get_millisecond();
+		// usleep(arg_time / 1000);
+		ret = gettimeofday_ms();
 	}
 }
