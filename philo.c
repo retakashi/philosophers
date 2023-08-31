@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/08/31 13:22:10 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/31 15:12:25 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@ void	*monitor_status(void *arg_data)
 			break ;
 		}
 		else if (is_finished(p_data) == true)
-		{
 			break ;
-		}
 	}
 	return (p_data);
 }
@@ -52,7 +50,6 @@ void	*loop_philos(void *arg_data)
 		pthread_mutex_unlock(&p_data->cmn_data->died_lock);
 		pthread_mutex_unlock(&p_data->cmn_data->fin_lock);
 		take_fork(p_data);
-		print_str(p_data, THINK);
 	}
 	pthread_join(p_data->monitor, NULL);
 	return (p_data);

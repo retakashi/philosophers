@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 00:28:45 by reira             #+#    #+#             */
-/*   Updated: 2023/08/30 23:43:45 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/31 15:44:24 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_usleep(time_t arg_time)
 	ret = current;
 	while (ret < current + arg_time)
 	{
-		usleep(arg_time / 10);
+		usleep(arg_time / 100);
 		ret = get_millisecond();
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/08/31 13:08:52 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/31 14:14:06 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_p_data
 	time_t				last_eat;
 	pthread_mutex_t		*r_fork;
 	pthread_mutex_t		*l_fork;
-	pthread_mutex_t		ph_lock;
 	pthread_mutex_t		last_eat_lock;
 }						t_p_data;
 
@@ -58,8 +57,6 @@ typedef struct s_cmn_data
 	int					fin_cnt;
 	struct s_p_data		*p_data;
 	pthread_mutex_t		*forks;
-	pthread_mutex_t		lock;
-	pthread_mutex_t		print;
 	pthread_mutex_t		died_lock;
 	pthread_mutex_t		fin_lock;
 	pthread_t			*p_thread;

@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:47:57 by reira             #+#    #+#             */
-/*   Updated: 2023/08/31 13:00:13 by reira            ###   ########.fr       */
+/*   Updated: 2023/08/31 15:24:12 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	sleep_philo(t_p_data *p_data)
 	}
 	print_str(p_data, SLEEP);
 	ft_usleep(p_data->cmn_data->sleep_time);
+	print_str(p_data, THINK);
 }
 
 void	eat(t_p_data *p_data)
