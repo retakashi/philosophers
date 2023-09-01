@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 21:30:35 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 23:03:35 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@
 typedef struct s_p_data
 {
 	int					i;
-	pthread_t			monitor;
 	struct s_cmn_data	*cmn_data;
 	int					eat_cnt;
 	time_t				last_eat;
@@ -62,6 +61,7 @@ typedef struct s_cmn_data
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		cmn_lock;
 	pthread_t			*p_thread;
+	pthread_t			*monitor;
 }						t_cmn_data;
 
 // ft_atoi.c

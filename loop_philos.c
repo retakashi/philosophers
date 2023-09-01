@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:47:57 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 21:43:27 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 23:28:01 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	eat(t_p_data *p_data)
 
 int	take_fork(t_p_data *p_data)
 {
+	if (p_data->i == p_data->cmn_data->total - 1)
+		usleep(100);
 	pthread_mutex_lock(p_data->r_fork);
 	print_status(p_data, TAKE);
 	if (p_data->r_fork == p_data->l_fork)
@@ -53,9 +55,9 @@ void	*loop_philos(void *arg_data)
 	t_p_data	*p_data;
 
 	p_data = (t_p_data *)arg_data;
+	pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
 	p_data->last_eat = gettimeofday_ms();
-	if (pthread_create(&p_data->monitor, NULL, &monitor_status, p_data) != 0)
-		return ((void *)FAILURE);
+	pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
 	while (1)
 	{
 		pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
@@ -68,6 +70,5 @@ void	*loop_philos(void *arg_data)
 		if (take_fork(p_data) == FAILURE)
 			break ;
 	}
-	pthread_join(p_data->monitor, NULL);
 	return ((void *)SUCCESS);
 }

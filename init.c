@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 21:28:51 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 22:43:45 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,9 @@ int	init_data(t_cmn_data *cmn_data, int argc, char **argv)
 	cmn_data->p_thread = malloc(sizeof(pthread_t) * (cmn_data->total));
 	if (cmn_data->p_thread == NULL)
 		return (print_err("failed to malloc p_thread\n"));
+	cmn_data->monitor = malloc(sizeof(pthread_t) * (cmn_data->total));
+	if (cmn_data->monitor == NULL)
+		return (print_err("failed to malloc monitor\n"));
 	cmn_data->forks = malloc(sizeof(pthread_mutex_t) * (cmn_data->total));
 	if (cmn_data->forks == NULL)
 		return (print_err("failed to malloc forks\n"));
