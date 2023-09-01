@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 01:08:13 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 21:28:51 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 
 void	set_forks(t_cmn_data *data, int i)
 {
-	if (i == data->total - 1)
+	if (data->total == 1)
+	{
+		data->p_data[i].r_fork = &data->forks[0];
+		data->p_data[i].l_fork = &data->forks[0];
+	}
+	else if (i == data->total - 1)
 	{
 		data->p_data[i].r_fork = &data->forks[i];
 		data->p_data[i].l_fork = &data->forks[0];
@@ -31,6 +36,7 @@ void	init_mutex(t_cmn_data *cmn_data)
 	int	i;
 
 	i = 0;
+	pthread_mutex_init(&cmn_data->cmn_lock, NULL);
 	while (i < cmn_data->total)
 	{
 		pthread_mutex_init(&cmn_data->forks[i], NULL);
@@ -51,9 +57,9 @@ int	init_p_data(t_cmn_data *cmn_data)
 		cmn_data->p_data[i].i = i;
 		cmn_data->p_data[i].eat_cnt = 0;
 		cmn_data->p_data[i].last_eat = 0;
+		cmn_data->p_data[i].until_eat = cmn_data->until_eat;
 		set_forks(cmn_data, i);
 		cmn_data->p_data[i].cmn_data = cmn_data;
-		pthread_mutex_init(&cmn_data->p_data[i].last_eat_lock, NULL);
 		i++;
 	}
 	return (SUCCESS);
@@ -87,12 +93,14 @@ int	set_argv(t_cmn_data *data, char **argv)
 	return (SUCCESS);
 }
 
-int	init_data(t_cmn_data *cmn_data, char **argv)
+int	init_data(t_cmn_data *cmn_data, int argc, char **argv)
 {
+	if (argc != 5 && argc != 6)
+		return (print_err("too few or too many arguments\n"));
 	if (set_argv(cmn_data, argv) == FAILURE)
 		return (FAILURE);
-	cmn_data->died = 0;
-	cmn_data->finished = 0;
+	cmn_data->died = false;
+	cmn_data->finished = false;
 	cmn_data->fin_cnt = 0;
 	cmn_data->p_thread = malloc(sizeof(pthread_t) * (cmn_data->total));
 	if (cmn_data->p_thread == NULL)

@@ -6,74 +6,68 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:47:57 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 00:24:30 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 21:31:12 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	sleep_philo(t_p_data *p_data)
+void	sleep_philo(t_p_data *p_data)
 {
-	if (p_data->i % 2 == 0)
-	{
-		if (pthread_mutex_unlock(p_data->r_fork) != 0)
-			return (print_err("failed to pthread_mutex_unlock\n"));
-		if (pthread_mutex_unlock(p_data->l_fork) != 0)
-			return (print_err("failed to pthread_mutex_unlock\n"));
-	}
-	else
-	{
-		if (pthread_mutex_unlock(p_data->l_fork) != 0)
-			return (print_err("failed to pthread_mutex_unlock\n"));
-		if (pthread_mutex_unlock(p_data->r_fork) != 0)
-			return (print_err("failed to pthread_mutex_unlock\n"));
-	}
+	pthread_mutex_unlock(p_data->r_fork);
+	pthread_mutex_unlock(p_data->l_fork);
 	print_status(p_data, SLEEP);
 	ft_usleep(p_data->cmn_data->sleep_time);
 	print_status(p_data, THINK);
-	return (SUCCESS);
 }
 
-int	eat(t_p_data *p_data)
+void	eat(t_p_data *p_data)
 {
-	if (pthread_mutex_lock(&p_data->last_eat_lock) != 0)
-		return (print_err("failed to pthread_mutex_lock\n"));
+	pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
 	p_data->last_eat = gettimeofday_ms();
-	if (pthread_mutex_unlock(&p_data->last_eat_lock) != 0)
-		return (print_err("failed to pthread_mutex_unlock\n"));
+	pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
 	print_status(p_data, EAT);
 	ft_usleep(p_data->cmn_data->eat_time);
+	pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
 	p_data->eat_cnt++;
 	if (p_data->eat_cnt == p_data->cmn_data->until_eat)
-		p_data->cmn_data->fin_cnt++;	
-	if (sleep_philo(p_data) == FAILURE)
-		return (FAILURE);
-	return (SUCCESS);
+		p_data->cmn_data->fin_cnt++;
+	pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
+	sleep_philo(p_data);
 }
 
 int	take_fork(t_p_data *p_data)
 {
-	if (p_data->i % 2 == 0)
-	{
-		if (pthread_mutex_lock(p_data->r_fork) != 0)
-			return (print_err("failed to pthread_mutex_lock\n"));
-		print_status(p_data, TAKE);
-		if (pthread_mutex_lock(p_data->l_fork) != 0)
-			return (print_err("failed to pthread_mutex_lock\n"));
-		print_status(p_data, TAKE);
-	}
-	else
-	{
-		usleep(100);
-		if (pthread_mutex_lock(p_data->l_fork) != 0)
-			return (print_err("failed to pthread_mutex_lock\n"));
-		print_status(p_data, TAKE);
-		usleep(100);
-		if (pthread_mutex_lock(p_data->r_fork) != 0)
-			return (print_err("failed to pthread_mutex_lock\n"));
-		print_status(p_data, TAKE);
-	}
-	if (eat(p_data) == FAILURE)
+	pthread_mutex_lock(p_data->r_fork);
+	print_status(p_data, TAKE);
+	if (p_data->r_fork == p_data->l_fork)
 		return (FAILURE);
+	pthread_mutex_lock(p_data->l_fork);
+	print_status(p_data, TAKE);
+	eat(p_data);
 	return (SUCCESS);
+}
+
+void	*loop_philos(void *arg_data)
+{
+	t_p_data	*p_data;
+
+	p_data = (t_p_data *)arg_data;
+	p_data->last_eat = gettimeofday_ms();
+	if (pthread_create(&p_data->monitor, NULL, &monitor_status, p_data) != 0)
+		return ((void *)FAILURE);
+	while (1)
+	{
+		pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
+		if (p_data->cmn_data->died != 0 || p_data->cmn_data->finished != 0)
+		{
+			pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
+			break ;
+		}
+		pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
+		if (take_fork(p_data) == FAILURE)
+			break ;
+	}
+	pthread_join(p_data->monitor, NULL);
+	return ((void *)SUCCESS);
 }

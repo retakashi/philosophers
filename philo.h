@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 02:04:43 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 21:30:35 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ typedef struct s_p_data
 	pthread_t			monitor;
 	struct s_cmn_data	*cmn_data;
 	int					eat_cnt;
-	atomic_long			last_eat;
+	time_t				last_eat;
+	int					until_eat;
 	pthread_mutex_t		*r_fork;
 	pthread_mutex_t		*l_fork;
-	pthread_mutex_t		last_eat_lock;
 }						t_p_data;
 
 typedef struct s_cmn_data
@@ -55,25 +55,28 @@ typedef struct s_cmn_data
 	time_t				sleep_time;
 	time_t				start;
 	int					until_eat;
-	atomic_int			died;
-	atomic_int		finished;
-	atomic_int			fin_cnt;
+	bool				died;
+	bool				finished;
+	int					fin_cnt;
 	struct s_p_data		*p_data;
 	pthread_mutex_t		*forks;
+	pthread_mutex_t		cmn_lock;
 	pthread_t			*p_thread;
 }						t_cmn_data;
 
 // ft_atoi.c
 int						ft_atoi(const char *str);
 // init.c
-int						init_data(t_cmn_data *data, char **argv);
+int						init_data(t_cmn_data *data, int argc, char **argv);
 // loop_philos.c
-int						sleep_philo(t_p_data *p_data);
-int						eat(t_p_data *p_data);
+void					sleep_philo(t_p_data *p_data);
+void					eat(t_p_data *p_data);
 int						take_fork(t_p_data *p_data);
+void					*loop_philos(void *arg_data);
 // monitor_status.c
 int						is_died(t_p_data *p_data);
 int						is_finished(t_p_data *p_data);
+void					*monitor_status(void *arg_data);
 // utils.c
 time_t					gettimeofday_ms(void);
 void					ft_usleep(time_t arg_time);

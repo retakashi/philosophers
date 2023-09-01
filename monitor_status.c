@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:46:48 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 01:10:57 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 21:35:19 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 int	is_died(t_p_data *p_data)
 {
-	time_t	current;
+	time_t	time_left;
 
-	current = gettimeofday_ms();
-	if (pthread_mutex_lock(&p_data->last_eat_lock) != 0)
-		return (print_err("failed to pthread_mutex_lock\n"));
-	current -= p_data->last_eat;
-	if (pthread_mutex_unlock(&p_data->last_eat_lock) != 0)
-		return (print_err("failed to pthread_mutex_unlock\n"));
-	if (p_data->last_eat != 0 && current > p_data->cmn_data->die_time)
+	pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
+	time_left = p_data->cmn_data->die_time - (gettimeofday_ms()
+			- p_data->last_eat);
+	pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
+	if (time_left <= 0)
 	{
-        atomic_exchange(&p_data->cmn_data->died, &p_data->cmn_data->died+1);
+		pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
+		p_data->cmn_data->died = true;
+		pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
 		return (TRUE);
 	}
 	return (FALSE);
@@ -32,10 +32,34 @@ int	is_died(t_p_data *p_data)
 
 int	is_finished(t_p_data *p_data)
 {
-	if (p_data->cmn_data->fin_cnt == p_data->cmn_data->until_eat)
+	pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
+	if (p_data->cmn_data->fin_cnt == p_data->cmn_data->total)
 	{
-		atomic_exchange(&p_data->cmn_data->finished, &p_data->cmn_data->finished+1);
+		p_data->cmn_data->finished = true;
+		pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
 		return (TRUE);
 	}
+	pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
 	return (FALSE);
+}
+
+void	*monitor_status(void *arg_data)
+{
+	t_p_data	*p_data;
+
+	p_data = (t_p_data *)arg_data;
+	while (1)
+	{
+		usleep(2000);
+		if (is_died(p_data) == FAILURE || is_finished(p_data) == FAILURE)
+			return ((void *)FAILURE);
+		if (is_died(p_data) == TRUE)
+		{
+			print_status(p_data, DIE);
+			break ;
+		}
+		else if (is_finished(p_data) == TRUE)
+			break ;
+	}
+	return ((void *)SUCCESS);
 }
