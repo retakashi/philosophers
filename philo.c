@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 23:13:47 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/02 00:24:15 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,6 @@ int	start_philos(t_p_data *p_data)
 	return (SUCCESS);
 }
 
-// __attribute__((destructor)) static void destructor()
-// {
-// 	system("leaks -q philo");
-// }
-
 int	end_philos(t_p_data *p_data)
 {
 	int	i;
@@ -56,6 +51,8 @@ int	end_philos(t_p_data *p_data)
 
 void	free_all(t_cmn_data *data)
 {
+	if (data == NULL)
+		return ;
 	if (data->forks != NULL)
 		free(data->forks);
 	if (data->p_thread != NULL)
@@ -66,11 +63,18 @@ void	free_all(t_cmn_data *data)
 		free(data->p_data);
 }
 
+// __attribute__((destructor)) static void destructor()
+// {
+// 	system("leaks -q philo");
+// }
+
 int	main(int argc, char **argv)
 {
 	t_cmn_data	cmn_data;
 
-	if (init_data(&cmn_data, argc, argv) == FAILURE)
+	if (is_valid_argv(&cmn_data, argc, argv) == FAILURE)
+		return (FAILURE);
+	if (init_data(&cmn_data) == FAILURE)
 	{
 		free_all(&cmn_data);
 		return (FAILURE);

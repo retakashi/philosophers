@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:31:41 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 18:34:45 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 23:45:40 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	print_err(char *str)
 {
-	printf("%s\n", str);
+	printf("%s", str);
 	return (FAILURE);
 }
 

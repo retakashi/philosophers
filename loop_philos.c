@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:47:57 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 23:28:01 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/02 00:15:28 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,23 @@ void	eat(t_p_data *p_data)
 
 int	take_fork(t_p_data *p_data)
 {
-	if (p_data->i == p_data->cmn_data->total - 1)
+	if (p_data->i == p_data->cmn_data->total)
 		usleep(100);
 	pthread_mutex_lock(p_data->r_fork);
 	print_status(p_data, TAKE);
 	if (p_data->r_fork == p_data->l_fork)
+	{
+		pthread_mutex_unlock(p_data->r_fork);
 		return (FAILURE);
+	}
 	pthread_mutex_lock(p_data->l_fork);
 	print_status(p_data, TAKE);
+	if (p_data->cmn_data->until_eat == 0 || p_data->cmn_data->eat_time == 0)
+	{
+		pthread_mutex_unlock(p_data->r_fork);
+		pthread_mutex_unlock(p_data->l_fork);
+		return (FAILURE);
+	}
 	eat(p_data);
 	return (SUCCESS);
 }

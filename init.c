@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 22:43:45 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/01 23:47:34 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@ void	set_forks(t_cmn_data *data, int i)
 		data->p_data[i].r_fork = &data->forks[0];
 		data->p_data[i].l_fork = &data->forks[0];
 	}
-	else if (i == data->total - 1)
+	else if (i == data->total)
 	{
-		data->p_data[i].r_fork = &data->forks[i];
+		data->p_data[i].r_fork = &data->forks[i - 1];
 		data->p_data[i].l_fork = &data->forks[0];
 	}
 	else
 	{
-		data->p_data[i].r_fork = &data->forks[i];
-		data->p_data[i].l_fork = &data->forks[i + 1];
+		data->p_data[i].r_fork = &data->forks[i - 1];
+		data->p_data[i].l_fork = &data->forks[i];
 	}
 }
 
@@ -54,7 +54,7 @@ int	init_p_data(t_cmn_data *cmn_data)
 	i = 0;
 	while (i < cmn_data->total)
 	{
-		cmn_data->p_data[i].i = i;
+		cmn_data->p_data[i].i = i + 1;
 		cmn_data->p_data[i].eat_cnt = 0;
 		cmn_data->p_data[i].last_eat = 0;
 		cmn_data->p_data[i].until_eat = cmn_data->until_eat;
@@ -65,40 +65,8 @@ int	init_p_data(t_cmn_data *cmn_data)
 	return (SUCCESS);
 }
 
-int	set_argv(t_cmn_data *data, char **argv)
+int	init_data(t_cmn_data *cmn_data)
 {
-	int	total;
-
-	total = ft_atoi(argv[1]);
-	if (total < 0)
-		return (print_err("invalid argv[1]\n"));
-	data->die_time = (time_t)ft_atoi(argv[2]);
-	if (data->die_time < 0)
-		return (print_err("invalid argv[2]\n"));
-	data->eat_time = (time_t)ft_atoi(argv[3]);
-	if (data->eat_time < 0)
-		return (print_err("invalid argv[3]\n"));
-	data->sleep_time = (time_t)ft_atoi(argv[4]);
-	if (data->sleep_time < 0)
-		return (print_err("invalid argv[4]\n"));
-	if (argv[5] != NULL)
-	{
-		data->until_eat = ft_atoi(argv[5]);
-		if (data->until_eat < 0)
-			return (print_err("invalid argv[5]\n"));
-	}
-	else
-		data->until_eat = -1;
-	data->total = total;
-	return (SUCCESS);
-}
-
-int	init_data(t_cmn_data *cmn_data, int argc, char **argv)
-{
-	if (argc != 5 && argc != 6)
-		return (print_err("too few or too many arguments\n"));
-	if (set_argv(cmn_data, argv) == FAILURE)
-		return (FAILURE);
 	cmn_data->died = false;
 	cmn_data->finished = false;
 	cmn_data->fin_cnt = 0;

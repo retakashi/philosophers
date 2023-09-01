@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/09/01 23:03:35 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/02 00:23:10 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,9 @@ typedef struct s_cmn_data
 // ft_atoi.c
 int						ft_atoi(const char *str);
 // init.c
-int						init_data(t_cmn_data *data, int argc, char **argv);
+int						init_data(t_cmn_data *data);
+// is_valid_argv.c
+int						is_valid_argv(t_cmn_data *data, int argc, char **argv);
 // loop_philos.c
 void					sleep_philo(t_p_data *p_data);
 void					eat(t_p_data *p_data);

@@ -6,14 +6,14 @@
 #    By: reira <reira@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/07 17:05:16 by rtakashi          #+#    #+#              #
-#    Updated: 2023/09/01 22:58:10 by reira            ###   ########.fr        #
+#    Updated: 2023/09/02 00:22:30 by reira            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS =  ft_atoi.c init.c loop_philos.c monitor_status.c philo.c print.c utils.c 
+SRCS =  ft_atoi.c init.c is_valid_argv.c loop_philos.c monitor_status.c philo.c print.c utils.c 
 OBJS = ${addprefix $(OBJS_DIR)/,$(SRCS:.c=.o)}
 OBJS_DIR = objs
 RM = rm -f
