@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:46:48 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 23:37:15 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/03 00:26:38 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_died(t_p_data *p_data)
 	time_left = p_data->cmn_data->die_time - (gettimeofday_ms()
 			- p_data->last_eat);
 	pthread_mutex_unlock(&p_data->cmn_data->cmn_lock);
-	if (time_left < 0)
+	if (time_left <= 0)
 	{
 		pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
 		p_data->cmn_data->died = true;
