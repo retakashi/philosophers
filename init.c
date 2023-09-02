@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 11:09:55 by rtakashi         ###   ########.fr       */
+/*   Updated: 2023/09/02 23:44:53 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@ void	set_forks(t_cmn_data *data, int i)
 		data->p_data[i].r_fork = &data->forks[0];
 		data->p_data[i].l_fork = &data->forks[0];
 	}
-	else if (i == data->total - 1)
+	else if (i == data->total-1)
 	{
-		data->p_data[i].r_fork = &data->forks[i];
-		data->p_data[i].l_fork = &data->forks[0];
+		data->p_data[i].r_fork = &data->forks[0];
+		data->p_data[i].l_fork = &data->forks[i];
 	}
 	else
 	{
-		data->p_data[i].r_fork = &data->forks[i];
-		data->p_data[i].l_fork = &data->forks[i + 1];
+		data->p_data[i].r_fork = &data->forks[i + 1];
+		data->p_data[i].l_fork = &data->forks[i];
 	}
 }
 
@@ -56,8 +56,7 @@ int	init_p_data(t_cmn_data *cmn_data)
 	{
 		cmn_data->p_data[i].i = i + 1;
 		cmn_data->p_data[i].eat_cnt = 0;
-		cmn_data->p_data[i].last_eat = 0;
-		cmn_data->p_data[i].until_eat = cmn_data->until_eat;
+		cmn_data->p_data[i].last_eat = gettimeofday_ms();
 		set_forks(cmn_data, i);
 		cmn_data->p_data[i].cmn_data = cmn_data;
 		i++;

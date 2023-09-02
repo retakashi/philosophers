@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 00:24:15 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/02 23:40:40 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	start_philos(t_p_data *p_data)
 	int	i;
 
 	i = 0;
+	p_data->cmn_data->start = gettimeofday_ms();
 	while (i < p_data->cmn_data->total)
 	{
 		if (pthread_create(&p_data->cmn_data->monitor[i], NULL, &monitor_status,
@@ -79,7 +80,6 @@ int	main(int argc, char **argv)
 		free_all(&cmn_data);
 		return (FAILURE);
 	}
-	cmn_data.start = gettimeofday_ms();
 	if (start_philos(cmn_data.p_data) == FAILURE)
 	{
 		free_all(&cmn_data);

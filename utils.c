@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 00:28:45 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 12:19:41 by rtakashi         ###   ########.fr       */
+/*   Updated: 2023/09/03 00:04:24 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@ time_t	gettimeofday_ms(void)
 
 void	ft_usleep(time_t arg_time)
 {
+	// time_t	current;
+	// time_t	ret;
+	// current = gettimeofday_ms();
+	// ret = current;
+	// while (ret < current + arg_time)
+	// {
+	// 	ret = gettimeofday_ms();
+	// }
+	usleep(arg_time * 1000);
+}
+
+void	ft_gettimeofday_sleep(time_t arg_time)
+{
 	time_t	current;
 	time_t	ret;
 
@@ -33,4 +46,12 @@ void	ft_usleep(time_t arg_time)
 	{
 		ret = gettimeofday_ms();
 	}
+}
+
+void	ft_sleep(t_p_data *p_data, time_t arg_time)
+{
+	if (p_data->cmn_data->total < 6)
+		ft_gettimeofday_sleep(arg_time);
+	else
+		ft_usleep(arg_time);
 }

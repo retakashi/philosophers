@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 00:23:10 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/03 00:06:07 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_p_data
 	struct s_cmn_data	*cmn_data;
 	int					eat_cnt;
 	time_t				last_eat;
-	int					until_eat;
 	pthread_mutex_t		*r_fork;
 	pthread_mutex_t		*l_fork;
 }						t_p_data;
@@ -82,6 +81,7 @@ void					*monitor_status(void *arg_data);
 // utils.c
 time_t					gettimeofday_ms(void);
 void					ft_usleep(time_t arg_time);
+void					ft_sleep(t_p_data *p_data, time_t arg_time);
 // print.c
 int						print_err(char *str);
 void					print_status(t_p_data *p_data, int flg);
