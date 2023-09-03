@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 23:44:53 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/03 13:15:47 by rtakashi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	set_forks(t_cmn_data *data, int i)
 		data->p_data[i].r_fork = &data->forks[0];
 		data->p_data[i].l_fork = &data->forks[0];
 	}
-	else if (i == data->total-1)
+	else if (i == data->total - 1)
 	{
 		data->p_data[i].r_fork = &data->forks[0];
 		data->p_data[i].l_fork = &data->forks[i];

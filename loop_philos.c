@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop_philos.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:47:57 by reira             #+#    #+#             */
-/*   Updated: 2023/09/03 00:06:38 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/03 13:18:11 by rtakashi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,16 @@ void	eat(t_p_data *p_data)
 	sleep_philo(p_data);
 }
 
+void	take_fork_even(t_p_data *p_data)
+{
+	usleep(100);
+	pthread_mutex_lock(p_data->l_fork);
+	print_status(p_data, TAKE);
+	usleep(100);
+	pthread_mutex_lock(p_data->r_fork);
+	print_status(p_data, TAKE);
+}
+
 int	take_fork(t_p_data *p_data)
 {
 	if (p_data->i % 2 == 1)
@@ -51,14 +61,7 @@ int	take_fork(t_p_data *p_data)
 		print_status(p_data, TAKE);
 	}
 	else
-	{
-		usleep(100);
-		pthread_mutex_lock(p_data->l_fork);
-		print_status(p_data, TAKE);
-		usleep(100);
-		pthread_mutex_lock(p_data->r_fork);
-		print_status(p_data, TAKE);
-	}
+		take_fork_even(p_data);
 	if (p_data->cmn_data->until_eat == 0 || p_data->cmn_data->eat_time == 0)
 	{
 		pthread_mutex_unlock(p_data->r_fork);
