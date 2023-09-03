@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 00:28:45 by reira             #+#    #+#             */
-/*   Updated: 2023/09/03 13:18:22 by rtakashi         ###   ########.fr       */
+/*   Updated: 2023/09/03 22:40:42 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ time_t	gettimeofday_ms(void)
 	return (ans);
 }
 
-void	ft_usleep(time_t arg_time)
+static void	ft_usleep(time_t arg_time)
 {
 	usleep(arg_time * 1000);
 }
 
-void	ft_gettimeofday_sleep(time_t arg_time)
+static void	ft_gettimeofday_sleep(time_t arg_time)
 {
 	time_t	current;
 	time_t	ret;

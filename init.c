@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 23:27:23 by reira             #+#    #+#             */
-/*   Updated: 2023/09/03 13:15:47 by rtakashi         ###   ########.fr       */
+/*   Updated: 2023/09/04 00:26:26 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	set_forks(t_cmn_data *data, int i)
+static void	set_forks(t_cmn_data *data, int i)
 {
 	if (data->total == 1)
 	{
@@ -31,7 +31,7 @@ void	set_forks(t_cmn_data *data, int i)
 	}
 }
 
-void	init_mutex(t_cmn_data *cmn_data)
+static void	init_mutex(t_cmn_data *cmn_data)
 {
 	int	i;
 
@@ -44,7 +44,7 @@ void	init_mutex(t_cmn_data *cmn_data)
 	}
 }
 
-int	init_p_data(t_cmn_data *cmn_data)
+static int	init_p_data(t_cmn_data *cmn_data)
 {
 	int	i;
 

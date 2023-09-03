@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/09/03 00:06:07 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/03 22:48:04 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # define DIE 4
 # define FALSE 0
 # define TRUE 1
-// # define ATOMIC_INCREMENT(val) atomic_fetch_add(&(val), 1)
+
 typedef struct s_p_data
 {
 	int					i;
@@ -70,17 +70,10 @@ int						init_data(t_cmn_data *data);
 // is_valid_argv.c
 int						is_valid_argv(t_cmn_data *data, int argc, char **argv);
 // loop_philos.c
-void					sleep_philo(t_p_data *p_data);
-void					eat(t_p_data *p_data);
-int						take_fork(t_p_data *p_data);
 void					*loop_philos(void *arg_data);
 // monitor_status.c
-int						is_died(t_p_data *p_data);
-int						is_finished(t_p_data *p_data);
 void					*monitor_status(void *arg_data);
 // utils.c
-time_t					gettimeofday_ms(void);
-void					ft_usleep(time_t arg_time);
 void					ft_sleep(t_p_data *p_data, time_t arg_time);
 // print.c
 int						print_err(char *str);

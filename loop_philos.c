@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   loop_philos.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rtakashi <rtakashi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 12:47:57 by reira             #+#    #+#             */
-/*   Updated: 2023/09/03 13:18:11 by rtakashi         ###   ########.fr       */
+/*   Updated: 2023/09/03 22:37:56 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	sleep_philo(t_p_data *p_data)
+static void	sleep_philo(t_p_data *p_data)
 {
 	pthread_mutex_unlock(p_data->r_fork);
 	pthread_mutex_unlock(p_data->l_fork);
@@ -21,7 +21,7 @@ void	sleep_philo(t_p_data *p_data)
 	print_status(p_data, THINK);
 }
 
-void	eat(t_p_data *p_data)
+static void	eat(t_p_data *p_data)
 {
 	pthread_mutex_lock(&p_data->cmn_data->cmn_lock);
 	p_data->last_eat = gettimeofday_ms();
@@ -36,7 +36,7 @@ void	eat(t_p_data *p_data)
 	sleep_philo(p_data);
 }
 
-void	take_fork_even(t_p_data *p_data)
+static void	take_fork_even(t_p_data *p_data)
 {
 	usleep(100);
 	pthread_mutex_lock(p_data->l_fork);
@@ -46,7 +46,7 @@ void	take_fork_even(t_p_data *p_data)
 	print_status(p_data, TAKE);
 }
 
-int	take_fork(t_p_data *p_data)
+static int	take_fork(t_p_data *p_data)
 {
 	if (p_data->i % 2 == 1)
 	{

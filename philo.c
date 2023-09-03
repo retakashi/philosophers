@@ -6,13 +6,13 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 17:01:05 by reira             #+#    #+#             */
-/*   Updated: 2023/09/02 23:40:40 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/03 22:39:33 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	start_philos(t_p_data *p_data)
+static int	start_philos(t_p_data *p_data)
 {
 	int	i;
 
@@ -31,7 +31,7 @@ int	start_philos(t_p_data *p_data)
 	return (SUCCESS);
 }
 
-int	end_philos(t_p_data *p_data)
+static int	end_philos(t_p_data *p_data)
 {
 	int	i;
 
@@ -50,7 +50,7 @@ int	end_philos(t_p_data *p_data)
 	return (SUCCESS);
 }
 
-void	free_all(t_cmn_data *data)
+static void	free_all(t_cmn_data *data)
 {
 	if (data == NULL)
 		return ;
