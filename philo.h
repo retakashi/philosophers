@@ -6,7 +6,7 @@
 /*   By: reira <reira@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/08 21:08:12 by reira             #+#    #+#             */
-/*   Updated: 2023/09/03 22:48:04 by reira            ###   ########.fr       */
+/*   Updated: 2023/09/04 00:30:29 by reira            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void					*loop_philos(void *arg_data);
 // monitor_status.c
 void					*monitor_status(void *arg_data);
 // utils.c
+time_t					gettimeofday_ms(void);
 void					ft_sleep(t_p_data *p_data, time_t arg_time);
 // print.c
 int						print_err(char *str);
