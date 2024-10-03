@@ -17,5 +17,5 @@ make
 ```
 The unit of time is milliseconds.
 
-##Reference
+## Reference
 [philosophers-visualizer](https://github.com/nafuka11/philosophers-visualizer)
