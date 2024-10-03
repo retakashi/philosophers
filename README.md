@@ -1,5 +1,5 @@
 # philosophers
-![gif]()
+![gif](https://github.com/retakashi/philo/blob/main/philo/philo.gif)
 
 ## Overview
 Implementation of the dining philosophers problem with mutexes.
