@@ -16,3 +16,6 @@ make
 ./philo <number of philosophers> <time to die> <time to eat> <time to sleep> [number of times each philosopher must eat]
 ```
 The unit of time is milliseconds.
+
+##Reference
+[philosophers-visualizer](https://github.com/nafuka11/philosophers-visualizer)
