@@ -40,6 +40,7 @@ static void	ft_gettimeofday_sleep(time_t arg_time)
 	}
 }
 
+//6人未満はusleepより正確に時間を測定した方が死なない
 void	ft_sleep(t_p_data *p_data, time_t arg_time)
 {
 	if (p_data->cmn_data->total < 6)
